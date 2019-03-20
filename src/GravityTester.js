@@ -94,11 +94,8 @@
 				}
 			}
 
-			// Set first for prior
-			this._item.data.position = this._positionList[0].key;
-
 			// Return the result if we had one. Return values for the default position if not.
-			return this._result || new PositionCalculator(this._item);
+			return this._result || new PositionCalculator(this._item, this._positionList[0].key);
 		},
 
 		/**

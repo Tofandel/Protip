@@ -45,7 +45,7 @@
 	 * @returns {ProtipItemClass}
 	 * @constructor
 	 */
-	var ProtipItemClass = function(id, el, classInstance, override){
+	var ProtipItemClass = function (id, el, classInstance, override) {
 		return this._Construct(id, el, classInstance, override);
 	};
 
@@ -64,29 +64,29 @@
 		 * @returns {ProtipItemClass}
 		 * @private
 		 */
-		_Construct: function(id, el, classInstance, override){
+		_Construct: function (id, el, classInstance, override) {
 
 			/** @type {object} Override data-pt-* values. */
 			this._override = override || {};
 			this._override.identifier = id;
 
 			/** @type {object}    Object storing jQuery elements */
-			this.el               = {};
+			this.el = {};
 
 			/** @type {jQuery}    The source element. */
-			this.el.source        = el;
+			this.el.source = el;
 
 			/** @type {object}    All the data-* properties gathered from the source element. */
-			this.data             = {};
+			this.data = {};
 
 			/** @type {ProtipClass} Saving the ProtipClass instance. */
-			this.classInstance    = classInstance;
+			this.classInstance = classInstance;
 
 			/** @type {boolean}   Tells us of our protip is currently visible or not. */
-			this._isVisible       = false;
+			this._isVisible = false;
 
 			/** @type {object}    Object storing setTimeout tasks */
-			this._task            = {
+			this._task = {
 				delayIn: undefined,
 				delayOut: undefined
 			};
@@ -105,7 +105,7 @@
 				.data(this._namespaced(C.PROP_INITED), true);
 
 			// Fire ready with some timeout so any script can catch up.
-			setTimeout(function(){
+			setTimeout(function () {
 				this.el.source.trigger(C.EVENT_PROTIP_READY, this)
 			}.bind(this), 10);
 
@@ -117,46 +117,53 @@
 		 *
 		 * @param eventType {string} Type of the event.
 		 */
-		actionHandler: function(eventType){
+		actionHandler: function (eventType) {
 
 			if (this.data.trigger === C.TRIGGER_STICKY) {
 				// No handler needed for sticky
 			}
 			// Handling clicky protips
 			else if (
-					eventType === C.EVENT_CLICK
-					&& (this.data.trigger === C.TRIGGER_CLICK || this.data.trigger === C.TRIGGER_CLICK2)
+				eventType === C.EVENT_CLICK && (this.data.trigger === C.TRIGGER_CLICK || this.data.trigger === C.TRIGGER_CLICK2)
 			) {
 				this.toggle();
 			}
 			// Handling mouseover protips
 			else if (this.data.trigger !== C.TRIGGER_CLICK && this.data.trigger !== C.TRIGGER_CLICK2) {
-				switch(eventType){
+				switch (eventType) {
 					case C.EVENT_MOUSEOUT:
 						this.hide();
 						break;
 					case C.EVENT_MOUSEOVER:
 						this.show();
 						break;
-					default: break;
+					default:
+						break;
 				}
 			}
 		},
 
+		/***
+		 * Update the content of a protip instance (In case the title is a selector to an HTML element and the element was modified)
+		 */
+		update: function () {
+			this.data.title = this.data.originalTitle;
+			this._detectTitle();
+			this.el.protip.find('.protip-content').html(this.data.title);
+		},
 		/**
 		 * Destroys the current intance.
 		 * Reset data, hide, unbind, remove.
 		 */
-		destroy: function(){
+		destroy: function () {
 			this.hide(true);
 			this._unbind();
 			this.el.protip.remove();
 			this.el.source
 				.data(this._namespaced(C.PROP_INITED), false)
-				.data(this._namespaced(C.PROP_IDENTIFIER), false)
-				.removeData();
+				.data(this._namespaced(C.PROP_IDENTIFIER), false);
 			this.classInstance.onItemDestroyed(this.data.identifier);
-			$.each(this._task, function(k, task){
+			$.each(this._task, function (k, task) {
 				clearTimeout(task);
 			});
 		},
@@ -166,14 +173,14 @@
 		 *
 		 * @returns {boolean}
 		 */
-		isVisible: function(){
+		isVisible: function () {
 			return this._isVisible;
 		},
 
 		/**
 		 * Toggles the tooltip visibility state.
 		 */
-		toggle: function(){
+		toggle: function () {
 			if (this._isVisible) {
 				this.hide();
 			}
@@ -182,13 +189,68 @@
 			}
 		},
 
+		applyColors: function () {
+			var def_style;
+			if (this.data.scheme in C.SKINS) {
+				def_style = C.SKINS[this.data.scheme];
+			}
+			if (this.data.background) {
+				def_style.background = this.data.background;
+			}
+			if (this.data.border) {
+				def_style.border = this.data.border;
+			}
+			//Reset borders
+			this.el.protipArrow.add(this.el.protipArrowBorder).css({'border-top-color': '', 'border-bottom-color': '', 'border-left-color': '', 'border-right-color': ''});
+			switch (this.data.position) {
+				case C.POSITION_TOP:
+				case C.POSITION_TOP_LEFT:
+				case C.POSITION_TOP_RIGHT:
+				case C.POSITION_CORNER_RIGHT_TOP:
+					this.el.protipArrow.css({'border-top-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-top-color': def_style.border});
+					break;
+				case C.POSITION_RIGHT:
+				case C.POSITION_RIGHT_TOP:
+				case C.POSITION_RIGHT_BOTTOM:
+				case C.POSITION_CORNER_RIGHT_BOTTOM:
+					this.el.protipArrow.css({'border-right-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-right-color': def_style.border});
+					break;
+				case C.POSITION_BOTTOM:
+				case C.POSITION_BOTTOM_LEFT:
+				case C.POSITION_BOTTOM_RIGHT:
+				case C.POSITION_CORNER_LEFT_BOTTOM:
+					this.el.protipArrow.css({'border-bottom-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-bottom-color': def_style.border});
+					break;
+				case C.POSITION_LEFT:
+				case C.POSITION_LEFT_TOP:
+				case C.POSITION_LEFT_BOTTOM:
+				case C.POSITION_CORNER_LEFT_TOP:
+					this.el.protipArrow.css({'border-left-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-left-color': def_style.border});
+					break;
+			}
+
+			var style = {
+				background: def_style.background,
+				color: def_style.color,
+				border: ''
+			};
+			if (def_style.border) {
+				style.border = '1px solid' + def_style.border;
+			}
+			this.el.protip.css(style);
+		},
+
 		/**
 		 * Make a tooltip visible.
 		 *
 		 * @param force          [boolean]  If 'true' there will be no timeouts.
 		 * @param preventTrigger [boolean]  If 'true' protipShow won't be triggered.
 		 */
-		show: function(force, preventTrigger){
+		show: function (force, preventTrigger) {
 
 			// No title? Why tooltip?
 			if (!this.data.title) {
@@ -202,7 +264,7 @@
 
 			// Set new timeout task if needed
 			if (!force && this.data.delayIn) {
-				this._task.delayIn = setTimeout(function(){
+				this._task.delayIn = setTimeout(function () {
 					this.show(true);
 				}.bind(this), this.data.delayIn);
 
@@ -212,7 +274,7 @@
 
 			// Auto hide
 			if (this.data.autoHide !== false) {
-				this._task.autoHide = setTimeout(function(){
+				this._task.autoHide = setTimeout(function () {
 					this.hide(true);
 				}.bind(this), this.data.autoHide);
 			}
@@ -228,6 +290,8 @@
 				style = new PositionCalculator(this);
 			}
 
+			this.applyColors();
+
 			// Fire show event and add open class
 			this.el.source.addClass(C.SELECTOR_OPEN);
 			!preventTrigger && this.el.source.trigger(C.EVENT_PROTIP_SHOW, this);
@@ -238,10 +302,11 @@
 				.addClass(C.SELECTOR_SHOW);
 
 			// If we need animation
-			this.data.animate &&
+			if (this.data.animate) {
 				this.el.protip
 					.addClass(C.SELECTOR_ANIMATE)
 					.addClass(this.data.animate || this.classInstance.settings.animate);
+			}
 
 			// Set visibility
 			this._isVisible = true;
@@ -252,7 +317,8 @@
 		 *
 		 * @param position
 		 */
-		applyPosition: function(position){
+		applyPosition: function (position) {
+			this.data.position = position;
 			this.el.protip.attr('data-' + C.DEFAULT_NAMESPACE + '-' + C.PROP_POSITION, position);
 		},
 
@@ -262,7 +328,7 @@
 		 * @param force          [boolean]  If 'true' there will be no timeouts.
 		 * @param preventTrigger [boolean]  If 'true' protipHide event won't be triggered.
 		 */
-		hide: function(force, preventTrigger) {
+		hide: function (force, preventTrigger) {
 
 			this._task.delayOut && clearTimeout(this._task.delayOut);
 			this._task.delayIn && clearTimeout(this._task.delayIn);
@@ -270,7 +336,7 @@
 
 			// Set new timeout task if needed
 			if (!force && this.data.delayOut) {
-				this._task.delayOut = setTimeout(function(){
+				this._task.delayOut = setTimeout(function () {
 					this.hide(true);
 				}.bind(this), this.data.delayOut);
 
@@ -296,9 +362,9 @@
 		 *
 		 * @returns {{width: number, height: number}}
 		 */
-		getArrowOffset: function(){
+		getArrowOffset: function () {
 			return {
-				width:  this.el.protipArrow.outerWidth() || 0,
+				width: this.el.protipArrow.outerWidth() || 0,
 				height: this.el.protipArrow.outerHeight() || 0
 			};
 		},
@@ -309,10 +375,10 @@
 		 *
 		 * @private
 		 */
-		_fetchData: function(){
+		_fetchData: function () {
 
 			// Fetch
-			$.each(this.classInstance.settings.defaults, $.proxy(function(key){
+			$.each(this.classInstance.settings.defaults, $.proxy(function (key) {
 				this.data[key] = this.el.source.data(this._namespaced(key));
 			}, this));
 
@@ -321,7 +387,7 @@
 			this.data = $.extend({}, this.data, this._override);
 
 			// Now apply back to the element
-			$.each(this.data, $.proxy(function(key, value){
+			$.each(this.data, $.proxy(function (key, value) {
 				this.el.source.data(this._namespaced(key), value);
 			}, this));
 		},
@@ -331,7 +397,7 @@
 		 *
 		 * @private
 		 */
-		_prepareInternals: function(){
+		_prepareInternals: function () {
 			this._setTarget();
 			this._detectTitle();
 			this._checkInteractive();
@@ -342,7 +408,7 @@
 		 *
 		 * @private
 		 */
-		_checkInteractive: function(){
+		_checkInteractive: function () {
 			if (this.data.interactive) {
 				this.data.delayOut = this.data.delayOut || C.DEFAULT_DELAY_OUT;
 			}
@@ -353,7 +419,7 @@
 		 *
 		 * @private
 		 */
-		_initSticky: function(){
+		_initSticky: function () {
 			(this.data.trigger === C.TRIGGER_STICKY) && this.show();
 		},
 
@@ -362,7 +428,7 @@
 		 *
 		 * @private
 		 */
-		_initAutoShow: function(){
+		_initAutoShow: function () {
 			this.data.autoShow && this.show();
 		},
 
@@ -372,7 +438,7 @@
 		 *
 		 * @private
 		 */
-		_appendProtip: function(){
+		_appendProtip: function () {
 
 			// Generate HTML from template
 			this.el.protip = nano(this.classInstance.settings.protipTemplate, {
@@ -388,6 +454,7 @@
 			// Convert to jQuery object and append
 			this.el.protip = $(this.el.protip);
 			this.el.protipArrow = this.el.protip.find('.' + C.SELECTOR_PREFIX + C.SELECTOR_ARROW);
+			this.el.protipArrowBorder = this.el.protip.find('.' + C.SELECTOR_PREFIX + C.SELECTOR_ARROW_BORDER);
 			this.el.target.append(this.el.protip);
 		},
 
@@ -397,12 +464,16 @@
 		 * @returns {string} The final class list.
 		 * @private
 		 */
-		_getClassList: function(){
+		_getClassList: function () {
 			var classList = [];
-			var skin      = this.data.skin;
-			var size      = this.data.size;
-			var scheme    = this.data.scheme;
+			var skin = this.data.skin;
+			var size = this.data.size;
+			var scheme = this.data.scheme;
 
+			if (skin === 'square') {
+				classList.push('square');
+				skin = 'default';
+			}
 			// Main container class
 			classList.push(C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER);
 			// Skin class
@@ -420,10 +491,10 @@
 		},
 
 
-		_parseMixins: function(){
+		_parseMixins: function () {
 			var mixin = [];
 
-			this.data.mixin && this.data.mixin.split(' ').forEach(function(val){
+			this.data.mixin && this.data.mixin.split(' ').forEach(function (val) {
 				val && mixin.push(C.SELECTOR_MIXIN_PREFIX + val);
 			}, this);
 
@@ -436,7 +507,7 @@
 		 * @returns {C.ATTR_MAX_WIDTH || C.ATTR_WIDTH}
 		 * @private
 		 */
-		_getWidthType: function(){
+		_getWidthType: function () {
 			return !isNaN(this.data.width) ? C.ATTR_MAX_WIDTH : C.ATTR_WIDTH;
 		},
 
@@ -446,7 +517,7 @@
 		 * @returns {Number}
 		 * @private
 		 */
-		_getWidth: function(){
+		_getWidth: function () {
 			return parseInt(this.data.width, 10);
 		},
 
@@ -456,7 +527,7 @@
 		 * @returns {string}  HTML string
 		 * @private
 		 */
-		_getIconTemplate: function(){
+		_getIconTemplate: function () {
 			return this.data.icon ?
 				nano(this.classInstance.settings.iconTemplate, {
 					icon: this.data.icon
@@ -469,7 +540,7 @@
 		 *
 		 * @private
 		 */
-		_detectTitle: function(){
+		_detectTitle: function () {
 			if (this.data.title && (this.data.title.charAt(0) === '#' || this.data.title.charAt(0) === '.')) {
 				this.data.titleSource = this.data.titleSource || this.data.title;
 				this.data.title = $(this.data.title).html();
@@ -486,12 +557,13 @@
 					case C.PSEUDO_THIS:
 						this.data.title = this.el.source.html();
 						break;
-					default: break;
+					default:
+						break;
 				}
 			}
 
 			// Set to interactive if detects link
-			if (this.data.title && this.data.title.indexOf('<a ')+1) {
+			if (this.data.title && this.data.title.indexOf('<a ') + 1) {
 				this.data.interactive = true;
 			}
 		},
@@ -501,7 +573,7 @@
 		 *
 		 * @private
 		 */
-		_setTarget: function(){
+		_setTarget: function () {
 			var target = this._getData(C.PROP_TARGET);
 
 			// Target is itself
@@ -539,7 +611,7 @@
 		 * @returns {*}
 		 * @private
 		 */
-		_getData: function(key){
+		_getData: function (key) {
 			return this.el.source.data(this._namespaced(key));
 		},
 
@@ -550,7 +622,7 @@
 		 * @returns {string}
 		 * @private
 		 */
-		_namespaced: function(string){
+		_namespaced: function (string) {
 			return this.classInstance.namespaced(string);
 		},
 
@@ -559,7 +631,7 @@
 		 *
 		 * @private
 		 */
-		_onProtipMouseenter: function(){
+		_onProtipMouseenter: function () {
 			clearTimeout(this._task.delayOut);
 		},
 
@@ -568,8 +640,10 @@
 		 *
 		 * @private
 		 */
-		_onProtipMouseleave: function(){
-			(this.data.trigger === C.TRIGGER_HOVER) && this.hide();
+		_onProtipMouseleave: function () {
+			if (this.data.trigger === C.TRIGGER_HOVER) {
+				this.hide();
+			}
 		},
 
 		/**
@@ -577,7 +651,7 @@
 		 *
 		 * @private
 		 */
-		_bind: function(){
+		_bind: function () {
 			if (this.data.interactive) {
 				this.el.protip
 					.on(C.EVENT_MOUSEENTER, $.proxy(this._onProtipMouseenter, this))
@@ -585,7 +659,7 @@
 			}
 
 			if (this.data.observer) {
-				this._observerInstance = new MutationObserver(function() {
+				this._observerInstance = new MutationObserver(function () {
 					this.classInstance.reloadItemInstance(this.el.source);
 				}.bind(this));
 
@@ -603,7 +677,7 @@
 		 *
 		 * @private
 		 */
-		_unbind: function(){
+		_unbind: function () {
 			if (this.data.interactive) {
 				this.el.protip
 					.off(C.EVENT_MOUSEENTER, $.proxy(this._onProtipMouseenter, this))
@@ -618,7 +692,7 @@
 
 	/* Nano Templates - https://github.com/trix/nano */
 	function nano(template, data) {
-		return template.replace(/\{([\w\.]*)}/g, function(str, key) {
+		return template.replace(/\{([\w\.]*)}/g, function (str, key) {
 			var keys = key.split("."), v = data[keys.shift()];
 			for (var i = 0, l = keys.length; i < l; i++) v = v[keys[i]];
 			return (typeof v !== "undefined" && v !== null) ? v : "";

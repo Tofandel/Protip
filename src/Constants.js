@@ -15,6 +15,20 @@
 	"use strict";
 
 	var ProtipConstants = {
+		SKINS: {
+			'pro': {color: '#FFF', border: null, background: '#da2e2b'},
+			'blue': {color: '#FFF', border: null, background: '#336699'},
+			'red': {color: '#FFF', border: null, background: '#802731'},
+			'aqua': {color: '#FFF', border: null, background: '#339996'},
+			'dark': {color: '#FFF', border: null, background: '#333'},
+			'dark-transparent': {color: '#FFF', border: null, background: 'rgba(20,20,20,.8)'},
+			'black': {color: '#FFF', border: null, background: '#000'},
+			'leaf': {color: '#FFF', border: null, background: '#339959'},
+			'purple': {color: '#FFF', border: null, background: '#613399'},
+			'pink': {color: '#FFF', border: null, background: '#D457AA'},
+			'orange': {color: '#FFF', border: null, background: '#E64426'},
+			'white': {color: '#333', border: '#777', background: '#FFF'}
+		},
 		PLACEMENT_CENTER: 'center',
 		PLACEMENT_INSIDE: 'inside',
 		PLACEMENT_OUTSIDE: 'outside',
@@ -78,13 +92,14 @@
 		SELECTOR_PREFIX: 'protip-',
 		SELECTOR_BODY: 'body',
 		SELECTOR_ARROW: 'arrow',
+		SELECTOR_ARROW_BORDER: 'arrow-border',
 		SELECTOR_CONTAINER: 'container',
 		SELECTOR_SHOW: 'protip-show',
 		SELECTOR_CLOSE: '.protip-close',
-        SELECTOR_SKIN_PREFIX: 'protip-skin-',
-        SELECTOR_SIZE_PREFIX: '--size-',
-        SELECTOR_SCHEME_PREFIX: '--scheme-',
-        SELECTOR_ANIMATE: 'animated',
+		SELECTOR_SKIN_PREFIX: 'protip-skin-',
+		SELECTOR_SIZE_PREFIX: '--size-',
+		SELECTOR_SCHEME_PREFIX: '--scheme-',
+		SELECTOR_ANIMATE: 'animated',
 		SELECTOR_TARGET: '.protip-target',
 		SELECTOR_MIXIN_PREFIX: 'protip-mixin--',
 		SELECTOR_OPEN: 'protip-open',
@@ -95,16 +110,16 @@
 		ATTR_WIDTH: 'width',
 		ATTR_MAX_WIDTH: 'max-width',
 
-        SKIN_DEFAULT: 'default',
-        SIZE_DEFAULT: 'normal',
-        SCHEME_DEFAULT: 'pro',
+		SKIN_DEFAULT: 'default',
+		SIZE_DEFAULT: 'normal',
+		SCHEME_DEFAULT: 'pro',
 
 		PSEUDO_NEXT: 'next',
 		PSEUDO_PREV: 'prev',
 		PSEUDO_THIS: 'this'
 	};
 
-	ProtipConstants.TEMPLATE_ARROW = '<span class="' + ProtipConstants.SELECTOR_PREFIX + ProtipConstants.SELECTOR_ARROW + '"></span>';
+	ProtipConstants.TEMPLATE_ARROW = '<span class="' + ProtipConstants.SELECTOR_PREFIX + ProtipConstants.SELECTOR_ARROW + '"><span class="' + ProtipConstants.SELECTOR_PREFIX + ProtipConstants.SELECTOR_ARROW_BORDER + '"></span></span>';
 
 	return ProtipConstants;
 }));

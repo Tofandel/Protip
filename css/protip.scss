@@ -10,7 +10,9 @@
 		line-height: 1;
 		opacity: 0;
 		pointer-events: none;
+		font-family: sans-serif;
 		box-sizing: border-box;
+		transition: opacity 0.2s ease-out;
 
 		> i {
 			position: absolute;
@@ -23,7 +25,7 @@
 		}
 	}
 
-	&-arrow {
+	&-arrow, &-arrow-border {
 		content: '';
 		display: block;
 		position: absolute;
@@ -31,6 +33,9 @@
 		height: 0;
 		border-style: solid;
 		border-color: transparent;
+	}
+	&-arrow-border {
+		z-index: -1;
 	}
 
 	&-show {

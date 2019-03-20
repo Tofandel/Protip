@@ -1,6 +1,6 @@
 (function (root, factory) {
 
-    'use strict';
+	'use strict';
 
 	if (typeof define === 'function' && define.amd) {
 		define([
@@ -26,13 +26,13 @@
 	}
 }(this, function ($, ProtipClass, ProtipBuffer, C) {
 
-    'use strict';
+	'use strict';
 
 	// Extend the jQuery object with singleton members
 	$ = $.extend($, {
 		_protipClassInstance: undefined,
 		_protipBuffer: new ProtipBuffer(),
-		protip: function(settings){
+		protip: function (settings) {
 			if (!this._protipClassInstance) {
 				this._protipClassInstance = new ProtipClass(settings);
 				this.protip.C = C;
@@ -46,26 +46,41 @@
 		/**
 		 * Destroys protip
 		 */
-		protipDestroy: function() {
+		protipDestroy: function () {
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					el = $(el);
-					$._protipClassInstance.getItemInstance(el).destroy();
+					$._protipClassInstance.destroyItemInstance(el);
 				});
 			}
 			return this;
 		},
-		
+
+		/**
+		 *
+		 * @param e
+		 * @return {protipUpdate}
+		 */
+		protipUpdate: function (e) {
+			if ($._protipBuffer.isReady()) {
+				return this.each(function (index, el) {
+					el = $(el);
+					$._protipClassInstance.getItemInstance(el).update();
+				});
+			}
+			$._protipBuffer.add('protipUpdate', this, arguments);
+			return this;
+		},
 		/**
 		 * Simply sets tooltip to the element but it won't show.
 		 *
 		 * @returns {*}
 		 */
-		protipSet: function(override) {
+		protipSet: function (override) {
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					el = $(el);
-					$._protipClassInstance.getItemInstance(el).destroy();
+					$._protipClassInstance.destroyItemInstance(el);
 					$._protipClassInstance.getItemInstance(el, override);
 				});
 			}
@@ -78,11 +93,11 @@
 		 *
 		 * @returns {*}
 		 */
-		protipShow: function(override) {
+		protipShow: function (override) {
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					el = $(el);
-					$._protipClassInstance.getItemInstance(el).destroy();
+					$._protipClassInstance.destroyItemInstance(el);
 					$._protipClassInstance.getItemInstance(el, override).show(true);
 				});
 			}
@@ -95,7 +110,7 @@
 		 *
 		 * @returns {*}
 		 */
-		protipHide: function() {
+		protipHide: function () {
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					$._protipClassInstance.getItemInstance($(el)).hide(true);
@@ -110,7 +125,7 @@
 		 *
 		 * @returns {*}
 		 */
-		protipToggle: function() {
+		protipToggle: function () {
 			if ($._protipBuffer.isReady()) {
 				var instance;
 				return this.each(function (index, el) {
@@ -127,7 +142,7 @@
 		 *
 		 * @returns {*}
 		 */
-		protipHideInside: function(){
+		protipHideInside: function () {
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					$(el).find($._protipClassInstance.settings.selector).each(function (index, el2) {
@@ -144,7 +159,7 @@
 		 *
 		 * @returns {*}
 		 */
-		protipShowInside: function(){
+		protipShowInside: function () {
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					$(el).find($._protipClassInstance.settings.selector).each(function (index, el2) {
@@ -161,7 +176,7 @@
 		 *
 		 * @returns {*}
 		 */
-		protipToggleInside: function(){
+		protipToggleInside: function () {
 			if ($._protipBuffer.isReady()) {
 				var instance;
 

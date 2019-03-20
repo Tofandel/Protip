@@ -142,6 +142,9 @@ Protip related attributes will always get a pt namespace so Protip won't conflic
 | **auto-hide**   | false     | *Bool, Number* | Tooltip will hide itself automatically after this timeout (milliseconds).                                                                                                                                    |
 | **auto-show**   | false     | *Bool*         | Automatically show tooltip for this element on load (stickies will be shown anyway).                                                                                                                                    |
 | **mixin**       | undefined | *String*       | Tooltip mixins to use. Separated by spaces.                                                                                                                                    |
+| **background**  | undefined | *String*       | You can specify the tooltip background with this option. (Eg: "#333", "rgba(20,20,20,.8)")                                                                                                                                    |
+| **color**       | undefined | *String*       | You can specify the font color with this option.                                                                                                                                   |
+| **border**      | undefined | *String*       | You can specify the border color with this option, null for no border. (The border will always be 1px)                                                                                                                                   |
 
 ## jQuery Helpers
 ```javascript
