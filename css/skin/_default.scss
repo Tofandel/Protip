@@ -258,6 +258,11 @@ $_protipDefaultSkinSizes: (
 
 }
 
+.protip-container.protip-skin-default {
+  font-family: sans-serif;
+  transition: opacity 0.2s ease-out;
+}
+
 // Sizes
 @each $sizeName, $sizeMap in $_protipDefaultSkinSizes {
   $sizeSel: protip-skin-default--size-#{$sizeName};
