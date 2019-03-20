@@ -185,8 +185,8 @@ $_protipDefaultSkinSizes: (
 
       @if $hasBorder {
         &-border {
-          bottom: -2px;
-          right: $arrow-size*-1;
+          top: 0;
+          right: $arrow-size*-1-1;
           margin: 0 0 0 $arrow-size*-1-2;
           border-width: 0 $arrow-size+2 $arrow-size+2 0;
         }
@@ -207,7 +207,7 @@ $_protipDefaultSkinSizes: (
       @if $hasBorder {
         &-border {
           bottom: -2px;
-          right: $arrow-size*-1;
+          right: $arrow-size*-1-1;
           margin: 0 0 0 $arrow-size+2;
           border-width: $arrow-size+2 $arrow-size+2 0 0;
         }
@@ -248,9 +248,10 @@ $_protipDefaultSkinSizes: (
       border-width: $arrow-size 0 0 $arrow-size;
       @if $hasBorder {
         &-border {
-          left: $arrow-size*-1-1;
-          margin: $arrow-size*-1-1 0 0 $arrow-size+1;
-          border-width: $arrow-size+1 0 0 $arrow-size+1;
+          top: 0;
+          right: -1px;
+          margin: $arrow-size*-1-2 0 0 $arrow-size+2;
+          border-width: $arrow-size+2 0 0 $arrow-size+2;
         }
       }
     }

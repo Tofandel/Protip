@@ -216,22 +216,22 @@ el.protipShow({
 # Gravity
 
 ## List of available positions
-- corner-left-top
+- top-left-corner
 - top-left
 - top
 - top-right
-- corner-right-top
+- top-right-corner
 - right-top
 - right
 - right-bottom
 - bottom-left
 - bottom
 - bottom-right
-- corner-right-bottom
+- bottom-right-corner
 - left-top
 - left
 - left-bottom
-- corner-left-bottom
+- bottom-left-corner
 
 ![Available Protip positions](https://raw.githubusercontent.com/wintercounter/Protip/master/img/docs-positions.png)
 

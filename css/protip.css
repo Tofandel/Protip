@@ -165,8 +165,8 @@ body .protip-container.protip-mixin--css-no-style {
     margin: 0 0 0 -4px;
     border-width: 0 4px 4px 0; }
     .protip-skin-default--size-tiny[data-pt-position="top-left-corner"] .protip-arrow-border {
-      bottom: -2px;
-      right: -4px;
+      top: 0;
+      right: -5px;
       margin: 0 0 0 -6px;
       border-width: 0 6px 6px 0; }
 
@@ -179,7 +179,7 @@ body .protip-container.protip-mixin--css-no-style {
     border-width: 4px 4px 0 0; }
     .protip-skin-default--size-tiny[data-pt-position="top-right-corner"] .protip-arrow-border {
       bottom: -2px;
-      right: -4px;
+      right: -5px;
       margin: 0 0 0 6px;
       border-width: 6px 6px 0 0; }
 
@@ -204,9 +204,10 @@ body .protip-container.protip-mixin--css-no-style {
     margin: -4px 0 0 4px;
     border-width: 4px 0 0 4px; }
     .protip-skin-default--size-tiny[data-pt-position="bottom-right-corner"] .protip-arrow-border {
-      left: -5px;
-      margin: -5px 0 0 5px;
-      border-width: 5px 0 0 5px; }
+      top: 0;
+      right: -1px;
+      margin: -6px 0 0 6px;
+      border-width: 6px 0 0 6px; }
 
 .protip-skin-default--size-small {
   padding: 13px;
@@ -324,8 +325,8 @@ body .protip-container.protip-mixin--css-no-style {
     margin: 0 0 0 -6px;
     border-width: 0 6px 6px 0; }
     .protip-skin-default--size-small[data-pt-position="top-left-corner"] .protip-arrow-border {
-      bottom: -2px;
-      right: -6px;
+      top: 0;
+      right: -7px;
       margin: 0 0 0 -8px;
       border-width: 0 8px 8px 0; }
 
@@ -338,7 +339,7 @@ body .protip-container.protip-mixin--css-no-style {
     border-width: 6px 6px 0 0; }
     .protip-skin-default--size-small[data-pt-position="top-right-corner"] .protip-arrow-border {
       bottom: -2px;
-      right: -6px;
+      right: -7px;
       margin: 0 0 0 8px;
       border-width: 8px 8px 0 0; }
 
@@ -363,9 +364,10 @@ body .protip-container.protip-mixin--css-no-style {
     margin: -6px 0 0 6px;
     border-width: 6px 0 0 6px; }
     .protip-skin-default--size-small[data-pt-position="bottom-right-corner"] .protip-arrow-border {
-      left: -7px;
-      margin: -7px 0 0 7px;
-      border-width: 7px 0 0 7px; }
+      top: 0;
+      right: -1px;
+      margin: -8px 0 0 8px;
+      border-width: 8px 0 0 8px; }
 
 .protip-skin-default--size-normal {
   padding: 16px;
@@ -483,8 +485,8 @@ body .protip-container.protip-mixin--css-no-style {
     margin: 0 0 0 -8px;
     border-width: 0 8px 8px 0; }
     .protip-skin-default--size-normal[data-pt-position="top-left-corner"] .protip-arrow-border {
-      bottom: -2px;
-      right: -8px;
+      top: 0;
+      right: -9px;
       margin: 0 0 0 -10px;
       border-width: 0 10px 10px 0; }
 
@@ -497,7 +499,7 @@ body .protip-container.protip-mixin--css-no-style {
     border-width: 8px 8px 0 0; }
     .protip-skin-default--size-normal[data-pt-position="top-right-corner"] .protip-arrow-border {
       bottom: -2px;
-      right: -8px;
+      right: -9px;
       margin: 0 0 0 10px;
       border-width: 10px 10px 0 0; }
 
@@ -522,9 +524,10 @@ body .protip-container.protip-mixin--css-no-style {
     margin: -8px 0 0 8px;
     border-width: 8px 0 0 8px; }
     .protip-skin-default--size-normal[data-pt-position="bottom-right-corner"] .protip-arrow-border {
-      left: -9px;
-      margin: -9px 0 0 9px;
-      border-width: 9px 0 0 9px; }
+      top: 0;
+      right: -1px;
+      margin: -10px 0 0 10px;
+      border-width: 10px 0 0 10px; }
 
 .protip-skin-default--size-big {
   padding: 20px;
@@ -642,8 +645,8 @@ body .protip-container.protip-mixin--css-no-style {
     margin: 0 0 0 -10px;
     border-width: 0 10px 10px 0; }
     .protip-skin-default--size-big[data-pt-position="top-left-corner"] .protip-arrow-border {
-      bottom: -2px;
-      right: -10px;
+      top: 0;
+      right: -11px;
       margin: 0 0 0 -12px;
       border-width: 0 12px 12px 0; }
 
@@ -656,7 +659,7 @@ body .protip-container.protip-mixin--css-no-style {
     border-width: 10px 10px 0 0; }
     .protip-skin-default--size-big[data-pt-position="top-right-corner"] .protip-arrow-border {
       bottom: -2px;
-      right: -10px;
+      right: -11px;
       margin: 0 0 0 12px;
       border-width: 12px 12px 0 0; }
 
@@ -681,9 +684,10 @@ body .protip-container.protip-mixin--css-no-style {
     margin: -10px 0 0 10px;
     border-width: 10px 0 0 10px; }
     .protip-skin-default--size-big[data-pt-position="bottom-right-corner"] .protip-arrow-border {
-      left: -11px;
-      margin: -11px 0 0 11px;
-      border-width: 11px 0 0 11px; }
+      top: 0;
+      right: -1px;
+      margin: -12px 0 0 12px;
+      border-width: 12px 0 0 12px; }
 
 .protip-skin-default--size-large {
   padding: 20px;
@@ -801,8 +805,8 @@ body .protip-container.protip-mixin--css-no-style {
     margin: 0 0 0 -12px;
     border-width: 0 12px 12px 0; }
     .protip-skin-default--size-large[data-pt-position="top-left-corner"] .protip-arrow-border {
-      bottom: -2px;
-      right: -12px;
+      top: 0;
+      right: -13px;
       margin: 0 0 0 -14px;
       border-width: 0 14px 14px 0; }
 
@@ -815,7 +819,7 @@ body .protip-container.protip-mixin--css-no-style {
     border-width: 12px 12px 0 0; }
     .protip-skin-default--size-large[data-pt-position="top-right-corner"] .protip-arrow-border {
       bottom: -2px;
-      right: -12px;
+      right: -13px;
       margin: 0 0 0 14px;
       border-width: 14px 14px 0 0; }
 
@@ -840,9 +844,10 @@ body .protip-container.protip-mixin--css-no-style {
     margin: -12px 0 0 12px;
     border-width: 12px 0 0 12px; }
     .protip-skin-default--size-large[data-pt-position="bottom-right-corner"] .protip-arrow-border {
-      left: -13px;
-      margin: -13px 0 0 13px;
-      border-width: 13px 0 0 13px; }
+      top: 0;
+      right: -1px;
+      margin: -14px 0 0 14px;
+      border-width: 14px 0 0 14px; }
 
 .protip-container.protip-skin-square {
   border-radius: 0 !important; }

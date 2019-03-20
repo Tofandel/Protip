@@ -1024,6 +1024,7 @@ require('./src/Plugin');
 		_test: function(position){
 			this._setProtipMinWidth();
 			var result = new PositionCalculator(this._item, position.key, position);
+			delete result.position;
 			this._item.el.protip.css(result);
 			this._setProtipDimensions();
 
@@ -1284,16 +1285,8 @@ require('./src/Plugin');
 			}
 		},
 
-		/***
-		 * Update the content of a protip instance (In case the title is a selector to an HTML element and the element was modified)
-		 */
-		update:  function () {
-			this.data.title = this.data.originalTitle;
-			this._detectTitle();
-			this.el.protip.find(C.SELECTOR_CONTENT).html(this.data.title);
-		},
 		/**
-		 * Destroys the current intance.
+		 * Destroys the current instance.
 		 * Reset data, hide, unbind, remove.
 		 */
 		destroy: function(){
@@ -1359,7 +1352,7 @@ require('./src/Plugin');
 				case C.POSITION_RIGHT:
 				case C.POSITION_RIGHT_TOP:
 				case C.POSITION_RIGHT_BOTTOM:
-				case C.POSITION_CORNER_RIGHT_BOTTOM:
+				case C.POSITION_CORNER_LEFT_TOP:
 					this.el.protipArrow.css({'border-right-color': def_style.background});
 					this.el.protipArrowBorder.css({'border-right-color': def_style.border});
 					break;
@@ -1373,7 +1366,7 @@ require('./src/Plugin');
 				case C.POSITION_LEFT:
 				case C.POSITION_LEFT_TOP:
 				case C.POSITION_LEFT_BOTTOM:
-				case C.POSITION_CORNER_LEFT_TOP:
+				case C.POSITION_CORNER_RIGHT_BOTTOM:
 					this.el.protipArrow.css({'border-left-color': def_style.background});
 					this.el.protipArrowBorder.css({'border-left-color': def_style.border});
 					break;
@@ -1424,19 +1417,20 @@ require('./src/Plugin');
 				}.bind(this), this.data.autoHide);
 			}
 
-			//this.update();
-
 			var style;
 
 			// Handle gravity/non-gravity based position calculations
 			if (this.data.gravity) {
 				style = new GravityTester(this);
-				this.data.position = style.position;
-				delete style.position;
 			}
 			else {
 				style = new PositionCalculator(this);
 			}
+
+			if (style.position) {
+				this.data.position = style.position;
+			}
+			delete style.position;
 
 			this.applyColors(style);
 
@@ -2227,14 +2221,14 @@ require('./src/Plugin');
 						if (this._placement === C.PLACEMENT_INSIDE) position.left -= this._protip.width;
 						if (this._placement === C.PLACEMENT_BORDER) position.left -= this._protip.width / 2;
 						break;
-					case C.POSITION_RIGHT_TOP:
+					case C.POSITION_RIGHT_BOTTOM:
 						this._offset.left += (globalOffset + arrowOffset.width);
 						position.left = (this._source.offset.left + this._source.width) - this._target.offset.left + this._offset.left + bodyScrollLeft;
 						position.top = (this._source.offset.top) - this._target.offset.top + this._offset.top + bodyScrollTop;
 						if (this._placement === C.PLACEMENT_INSIDE) position.left -= this._protip.width;
 						if (this._placement === C.PLACEMENT_BORDER) position.left -= this._protip.width / 2;
 						break;
-					case C.POSITION_RIGHT_BOTTOM:
+					case C.POSITION_RIGHT_TOP:
 						this._offset.left += (globalOffset + arrowOffset.width);
 						position.left = (this._source.offset.left + this._source.width) - this._target.offset.left + this._offset.left + bodyScrollLeft;
 						position.top = (this._source.offset.top + this._source.height - this._protip.height) - this._target.offset.top + this._offset.top + bodyScrollTop;
@@ -2269,14 +2263,14 @@ require('./src/Plugin');
 						if (this._placement === C.PLACEMENT_INSIDE) position.left += this._protip.width;
 						if (this._placement === C.PLACEMENT_BORDER) position.left += this._protip.width / 2;
 						break;
-					case C.POSITION_LEFT_TOP:
+					case C.POSITION_LEFT_BOTTOM:
 						this._offset.left += (globalOffset + arrowOffset.width) * -1;
 						position.left = (this._source.offset.left - this._protip.width) - this._target.offset.left + this._offset.left + bodyScrollLeft;
 						position.top = (this._source.offset.top) - this._target.offset.top + this._offset.top + bodyScrollTop;
 						if (this._placement === C.PLACEMENT_INSIDE) position.left += this._protip.width;
 						if (this._placement === C.PLACEMENT_BORDER) position.left += this._protip.width / 2;
 						break;
-					case C.POSITION_LEFT_BOTTOM:
+					case C.POSITION_LEFT_TOP:
 						this._offset.left += (globalOffset + arrowOffset.width) * -1;
 						position.left = (this._source.offset.left - this._protip.width) - this._target.offset.left + this._offset.left + bodyScrollLeft;
 						position.top = (this._source.offset.top + this._source.height - this._protip.height) - this._target.offset.top + this._offset.top + bodyScrollTop;
@@ -2332,6 +2326,8 @@ require('./src/Plugin');
 
 			position.left = position.left + 'px';
 			position.top  = position.top + 'px';
+
+			position.position = this._position;
 
 			return position;
 		}

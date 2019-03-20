@@ -210,7 +210,7 @@
 				case C.POSITION_RIGHT:
 				case C.POSITION_RIGHT_TOP:
 				case C.POSITION_RIGHT_BOTTOM:
-				case C.POSITION_CORNER_RIGHT_BOTTOM:
+				case C.POSITION_CORNER_LEFT_TOP:
 					this.el.protipArrow.css({'border-right-color': def_style.background});
 					this.el.protipArrowBorder.css({'border-right-color': def_style.border});
 					break;
@@ -224,7 +224,7 @@
 				case C.POSITION_LEFT:
 				case C.POSITION_LEFT_TOP:
 				case C.POSITION_LEFT_BOTTOM:
-				case C.POSITION_CORNER_LEFT_TOP:
+				case C.POSITION_CORNER_RIGHT_BOTTOM:
 					this.el.protipArrow.css({'border-left-color': def_style.background});
 					this.el.protipArrowBorder.css({'border-left-color': def_style.border});
 					break;
@@ -280,12 +280,15 @@
 			// Handle gravity/non-gravity based position calculations
 			if (this.data.gravity) {
 				style = new GravityTester(this);
-				this.data.position = style.position;
-				delete style.position;
 			}
 			else {
 				style = new PositionCalculator(this);
 			}
+
+			if (style.position) {
+				this.data.position = style.position;
+			}
+			delete style.position;
 
 			this.applyColors(style);
 
