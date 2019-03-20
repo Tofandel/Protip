@@ -359,7 +359,6 @@
 			var el                = $(ev.target);
 			var container         = el.closest('.' + C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER) || false;
 			var source            = el.closest(C.DEFAULT_SELECTOR);
-			//var sourceInstance    = this._isInited(source) ? this.getItemInstance(source) : false;
 			var containerInstance = this._isInited(container) ? this.getItemInstance(container) : false;
 
 			if (!containerInstance || containerInstance && containerInstance.data.trigger !== C.TRIGGER_CLICK) {

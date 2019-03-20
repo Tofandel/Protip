@@ -291,6 +291,7 @@
 			// Handle gravity/non-gravity based position calculations
 			if (this.data.gravity) {
 				style = new GravityTester(this);
+				this.data.position = style.position;
 				delete style.position;
 			}
 			else {
@@ -325,7 +326,6 @@
 		 * @param position
 		 */
 		applyPosition: function(position){
-			this.data.position = position;
 			this.el.protip.attr('data-' + C.DEFAULT_NAMESPACE + '-' + C.PROP_POSITION, position);
 		},
 
