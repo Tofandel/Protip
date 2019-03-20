@@ -33,13 +33,10 @@
 	// Lower the interval time, we don't need that much accuracy.
 	try {
 		window.MutationObserver._period = 100;
-	} catch (e) {
+	} catch(e) {
 		console.warn("Protip: MutationObserver polyfill haven't been loaded!");
 		// "Polyfill" for MutationObserver so Protip won't break if the real polyfill not included
-		window.MutationObserver = window.MutationObserver || function () {
-			this.disconnect = this.observe = function () {
-			};
-		};
+		window.MutationObserver = window.MutationObserver || function(){this.disconnect=this.observe=function(){}};
 	}
 
 	/**
@@ -49,7 +46,7 @@
 	 * @returns {ProtipClass}
 	 * @constructor
 	 */
-	var ProtipClass = function (settings) {
+	var ProtipClass = function(settings){
 		return this._Construct(settings);
 	};
 
@@ -65,53 +62,53 @@
 		 */
 		_defaults: {
 			/** @type String    Selector for protips */
-			selector: C.DEFAULT_SELECTOR,
+			selector:           C.DEFAULT_SELECTOR,
 			/** @type String    Namespace of the data attributes */
-			namespace: C.DEFAULT_NAMESPACE,
+			namespace:          C.DEFAULT_NAMESPACE,
 			/** @type String    Template of protip element */
-			protipTemplate: C.TEMPLATE_PROTIP,
+			protipTemplate:     C.TEMPLATE_PROTIP,
 			/** @type String    Template of the arrow element */
-			arrowTemplate: C.TEMPLATE_ARROW,
+			arrowTemplate:      C.TEMPLATE_ARROW,
 			/** @type String    Template of protip icon */
-			iconTemplate: C.TEMPLATE_ICON,
+			iconTemplate:       C.TEMPLATE_ICON,
 			/** @type Boolean   Should we observe whole document for assertions and removals */
-			observer: true,
+			observer:           true,
 			/** @type Number    Global offset of all tooltips. */
-			offset: 0,
+			offset:             0,
 			/** @type Boolean   Forces the tooltip to have min-width by it's width calculation. */
-			forceMinWidth: true,
+			forceMinWidth:      true,
 			/** @type Number    Default time for OnResize event Timeout. */
-			delayResize: 100,
+			delayResize:        100,
 			/** @type Object    Default data-pt-* values for a tooltip */
 			defaults: {
-				trigger: C.TRIGGER_HOVER,
-				title: null,
-				inited: false,
-				delayIn: 0,
-				delayOut: 0,
+				trigger:     C.TRIGGER_HOVER,
+				title:       null,
+				inited:      false,
+				delayIn:     0,
+				delayOut:    0,
 				interactive: false,
-				gravity: true,
-				offsetTop: 0,
-				offsetLeft: 0,
-				position: C.POSITION_RIGHT,
-				placement: C.PLACEMENT_OUTSIDE,
-				classes: null,
-				arrow: true,
-				width: 300,
-				identifier: false,
-				icon: false,
-				observer: false,
-				target: C.SELECTOR_BODY,
-				skin: C.SKIN_DEFAULT,
-				size: C.SIZE_DEFAULT,
-				scheme: C.SCHEME_DEFAULT,
-				animate: false,
-				autoHide: false,
-				autoShow: false,
-				mixin: null,
-				background: null,
-				color: null,
-				border: null
+				gravity:     true,
+				offsetTop:   0,
+				offsetLeft:  0,
+				position:    C.POSITION_RIGHT,
+				placement: 	 C.PLACEMENT_OUTSIDE,
+				classes:     null,
+				arrow:       true,
+				width:       300,
+				identifier:  false,
+				icon:        false,
+				observer:    false,
+				target:      C.SELECTOR_BODY,
+				skin:        C.SKIN_DEFAULT,
+				size:        C.SIZE_DEFAULT,
+				scheme:      C.SCHEME_DEFAULT,
+				animate:     false,
+				autoHide:    false,
+				autoShow:    false,
+				mixin:       null,
+				background:  null,
+				color:       null,
+				border:      null
 			}
 		},
 
@@ -121,7 +118,7 @@
 		 * @returns {ProtipClass}
 		 * @private
 		 */
-		_Construct: function (settings) {
+		_Construct: function(settings){
 			/**
 			 * Overridden configuration options (extends defaults)
 			 *
@@ -161,9 +158,9 @@
 			 * @private
 			 */
 			this._task = {
-				delayIn: undefined,
+				delayIn:  undefined,
 				delayOut: undefined,
-				resize: undefined
+				resize:   undefined
 			};
 
 			// Do some initial things
@@ -179,15 +176,15 @@
 		 * Does unbind.
 		 * Makes some local references empty.
 		 */
-		destroy: function () {
+		destroy: function(){
 			this._unbind();
 
-			$.each(this._itemInstances, $.proxy(function (key) {
+			$.each(this._itemInstances, $.proxy(function(key){
 				this.destroyItemInstance(key);
 			}, this));
 
-			this._itemInstances = undefined;
-			this.settings = undefined;
+			this._itemInstances    = undefined;
+			this.settings          = undefined;
 			$._protipClassInstance = undefined;
 		},
 
@@ -197,7 +194,7 @@
 		 * @param string {string} The input string. eq: action
 		 * @returns {string} eg: ptAction
 		 */
-		namespaced: function (string) {
+		namespaced: function(string){
 			return this.settings.namespace + string.charAt(0).toUpperCase() + string.slice(1);
 		},
 
@@ -218,7 +215,7 @@
 		 *
 		 * @param key
 		 */
-		onItemDestroyed: function (key) {
+		onItemDestroyed: function(key){
 			delete this._itemInstances[key];
 		},
 
@@ -230,7 +227,7 @@
 		 * @param override {object} data-pt-* overrides
 		 * @returns {ProtipItemClass}
 		 */
-		createItemInstance: function (el, override) {
+		createItemInstance: function(el, override){
 			var id = this._generateId();
 			this._itemInstances[id] = new ProtipItemClass(id, el, this, override);
 			el.data(this.namespaced(C.PROP_IDENTIFIER), id);
@@ -243,7 +240,7 @@
 		 *
 		 * @param el {jQuery} Element we reload on.
 		 */
-		reloadItemInstance: function (el) {
+		reloadItemInstance: function(el){
 			var key = el.data(this.namespaced(C.PROP_IDENTIFIER));
 			this.destroyItemInstance(key);
 			this.createItemInstance(el);
@@ -257,7 +254,7 @@
 		 * @param override [object] data-pt-* overridables
 		 * @returns {ProtipItemClass}
 		 */
-		getItemInstance: function (el, override) {
+		getItemInstance: function(el, override){
 			var identifier = el.data(this.namespaced(C.PROP_IDENTIFIER));
 			return this._isInited(el) ? this._itemInstances[identifier] : this.createItemInstance(el, override);
 		},
@@ -268,10 +265,10 @@
 		 *
 		 * @private
 		 */
-		_fetchElements: function () {
+		_fetchElements: function(){
 			// Prevent early fetches
-			setTimeout(function () {
-				$(this.settings.selector).each($.proxy(function (index, el) {
+			setTimeout(function(){
+				$(this.settings.selector).each($.proxy(function(index, el){
 					this.getItemInstance($(el));
 				}, this));
 			}.bind(this));
@@ -283,7 +280,7 @@
 		 * @returns {string}
 		 * @private
 		 */
-		_generateId: function () {
+		_generateId: function(){
 			return new Date().valueOf() + Math.floor(Math.random() * 10000).toString();
 		},
 
@@ -294,7 +291,7 @@
 		 * @returns {boolean}
 		 * @private
 		 */
-		_isInited: function (el) {
+		_isInited: function(el){
 			return !!el.data(this.namespaced(C.PROP_INITED));
 		},
 
@@ -304,8 +301,8 @@
 		 * @param preventTrigger [boolean] Prevent hide event from triggering?
 		 * @private
 		 */
-		_hideAll: function (force, preventTrigger) {
-			$.each(this._itemInstances, $.proxy(function (index, item) {
+		_hideAll: function(force, preventTrigger){
+			$.each(this._itemInstances, $.proxy(function(index, item){
 				item.isVisible() && this._visibleBeforeResize.push(item) && item.hide(force, preventTrigger);
 			}, this));
 		},
@@ -316,8 +313,8 @@
 		 * @param preventTrigger [boolean] Prevent show event from triggering?
 		 * @private
 		 */
-		_showAll: function (force, preventTrigger) {
-			this._visibleBeforeResize.forEach(function (item) {
+		_showAll: function(force, preventTrigger){
+			this._visibleBeforeResize.forEach(function(item){
 				item.show(force, preventTrigger);
 			});
 		},
@@ -328,7 +325,7 @@
 		 * @param ev {Event} Event object.
 		 * @private
 		 */
-		_onAction: function (ev) {
+		_onAction: function(ev){
 			var el = $(ev.currentTarget);
 			var item = this.getItemInstance(el);
 
@@ -342,7 +339,7 @@
 		 *
 		 * @private
 		 */
-		_onResize: function () {
+		_onResize: function(){
 			!this._task.resize && this._hideAll(true, true);
 			this._task.resize && clearTimeout(this._task.resize);
 			this._task.resize = setTimeout(function () {
@@ -358,11 +355,11 @@
 		 * @param ev {Event} Event object.
 		 * @private
 		 */
-		_onBodyClick: function (ev) {
-			var el = $(ev.target);
-			var container = el.closest('.' + C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER) || false;
-			var source = el.closest(C.DEFAULT_SELECTOR);
-			//var sourceInstance = this._isInited(source) ? this.getItemInstance(source) : false;
+		_onBodyClick: function(ev){
+			var el                = $(ev.target);
+			var container         = el.closest('.' + C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER) || false;
+			var source            = el.closest(C.DEFAULT_SELECTOR);
+			//var sourceInstance    = this._isInited(source) ? this.getItemInstance(source) : false;
 			var containerInstance = this._isInited(container) ? this.getItemInstance(container) : false;
 
 			if (!containerInstance || containerInstance && containerInstance.data.trigger !== C.TRIGGER_CLICK) {
@@ -382,7 +379,7 @@
 		 * @param ev {Event} Event object.
 		 * @private
 		 */
-		_onCloseClick: function (ev) {
+		_onCloseClick: function(ev){
 			var identifier = $(ev.currentTarget).parents('.' + C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER).data(this.namespaced(C.PROP_IDENTIFIER));
 			this._itemInstances[identifier] && this._itemInstances[identifier].hide();
 		},
@@ -393,8 +390,8 @@
 		 * @param mutations {<Array>MutationRecord}
 		 * @private
 		 */
-		_mutationObserverCallback: function (mutations) {
-			mutations.forEach(function (mutation) {
+		_mutationObserverCallback: function(mutations) {
+			mutations.forEach(function(mutation) {
 				var node;
 				for (var i = 0; i < mutation.addedNodes.length; i++) {
 					node = $(mutation.addedNodes[i]);
@@ -415,7 +412,7 @@
 
 				for (var i = 0; i < mutation.removedNodes.length; i++) {
 					var el = $(mutation.removedNodes[i]);
-					el.find(this.settings.selector).each(function (index, item) {
+					el.find(this.settings.selector).each(function(index, item){
 						this.getItemInstance($(item)).destroy();
 					}.bind(this));
 
@@ -431,7 +428,7 @@
 		 *
 		 * @private
 		 */
-		_bind: function () {
+		_bind: function(){
 			var body = $(C.SELECTOR_BODY);
 
 			body.on(C.EVENT_CLICK, $.proxy(this._onBodyClick, this))
@@ -460,7 +457,7 @@
 		 *
 		 * @private
 		 */
-		_unbind: function () {
+		_unbind: function(){
 			$(C.SELECTOR_BODY)
 				.off(C.EVENT_CLICK, $.proxy(this._onBodyClick, this))
 				.off(C.EVENT_MOUSEOVER, this.settings.selector, $.proxy(this._onAction, this))
