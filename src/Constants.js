@@ -15,19 +15,21 @@
 	"use strict";
 
 	var ProtipConstants = {
-		SKINS:             {
-			'pro':              {color: '#FFF', background: '#da2e2b'},
-			'blue':             {color: '#FFF', background: '#336699'},
-			'red':              {color: '#FFF', background: '#802731'},
-			'aqua':             {color: '#FFF', background: '#339996'},
-			'dark':             {color: '#FFF', background: '#333'},
-			'dark-transparent': {color: '#FFF', background: 'rgba(20,20,20,.8)'},
-			'black':            {color: '#FFF', background: '#000'},
-			'leaf':             {color: '#FFF', background: '#339959'},
-			'purple':           {color: '#FFF', background: '#613399'},
-			'pink':             {color: '#FFF', background: '#D457AA'},
-			'orange':           {color: '#FFF', background: '#E64426'},
-			'white':            {color: '#333', border: '#777', background: '#FFF'}
+		SKINS: {
+			default: {
+				'pro':              {color: '#FFF', background: '#da2e2b'},
+				'blue':             {color: '#FFF', background: '#336699'},
+				'red':              {color: '#FFF', background: '#802731'},
+				'aqua':             {color: '#FFF', background: '#339996'},
+				'dark':             {color: '#FFF', background: '#333'},
+				'dark-transparent': {color: '#FFF', background: 'rgba(20,20,20,.8)'},
+				'black':            {color: '#FFF', background: '#000'},
+				'leaf':             {color: '#FFF', background: '#339959'},
+				'purple':           {color: '#FFF', background: '#613399'},
+				'pink':             {color: '#FFF', background: '#D457AA'},
+				'orange':           {color: '#FFF', background: '#E64426'},
+				'white':            {color: '#333', border: '#777', background: '#FFF'}
+			}
 		},
 		PLACEMENT_CENTER: 'center',
 		PLACEMENT_INSIDE: 'inside',

@@ -143,16 +143,8 @@
 			}
 		},
 
-		/***
-		 * Update the content of a protip instance (In case the title is a selector to an HTML element and the element was modified)
-		 */
-		update:  function () {
-			this.data.title = this.data.originalTitle;
-			this._detectTitle();
-			this.el.protip.find(C.SELECTOR_CONTENT).html(this.data.title);
-		},
 		/**
-		 * Destroys the current intance.
+		 * Destroys the current instance.
 		 * Reset data, hide, unbind, remove.
 		 */
 		destroy: function(){
@@ -189,10 +181,10 @@
 			}
 		},
 
-		applyColors: function () {
-			var def_style;
-			if (this.data.scheme in C.SKINS) {
-				def_style = C.SKINS[this.data.scheme];
+		applyColors: function (style) {
+			var def_style = {};
+			if (this.data.skin in C.SKINS && this.data.scheme in C.SKINS[this.data.skin]) {
+				def_style = C.SKINS[this.data.skin][this.data.scheme];
 			}
 			if (this.data.background) {
 				def_style.background = this.data.background;
@@ -238,15 +230,14 @@
 					break;
 			}
 
-			var style = {
-				background: def_style.background,
-				color:      def_style.color,
-				border:     ''
-			};
+			style.background = def_style.background;
+			style.color = def_style.color;
+			style.border = '';
+
 			if (def_style.border) {
 				style.border = '1px solid' + def_style.border;
 			}
-			this.el.protip.css(style);
+			return style;
 		},
 
 		/**
@@ -284,8 +275,6 @@
 				}.bind(this), this.data.autoHide);
 			}
 
-			this.update();
-
 			var style;
 
 			// Handle gravity/non-gravity based position calculations
@@ -298,7 +287,7 @@
 				style = new PositionCalculator(this);
 			}
 
-			this.applyColors();
+			this.applyColors(style);
 
 			// Fire show event and add open class
 			this.el.source.addClass(C.SELECTOR_OPEN);

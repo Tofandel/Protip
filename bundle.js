@@ -239,7 +239,10 @@ require('./src/Plugin');
 				animate:     false,
 				autoHide:    false,
 				autoShow:    false,
-				mixin:       null
+				mixin:       null,
+				background:  null,
+				color:       null,
+				border:      null
 			}
 		},
 
@@ -335,8 +338,10 @@ require('./src/Plugin');
 		 *
 		 * @param key {string} Item instance identifier.
 		 */
-		destroyItemInstance: function(key){
-			this._itemInstances[key].destroy();
+		destroyItemInstance: function (key) {
+			if (key in this._itemInstances) {
+				this._itemInstances[key].destroy();
+			}
 		},
 
 		/**
@@ -488,16 +493,15 @@ require('./src/Plugin');
 			var el                = $(ev.target);
 			var container         = el.closest('.' + C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER) || false;
 			var source            = el.closest(C.DEFAULT_SELECTOR);
-			var sourceInstance    = this._isInited(source) ? this.getItemInstance(source) : false;
 			var containerInstance = this._isInited(container) ? this.getItemInstance(container) : false;
 
 			if (!containerInstance || containerInstance && containerInstance.data.trigger !== C.TRIGGER_CLICK) {
 				$.each(this._itemInstances, function (index, item) {
-					item.isVisible()
-					&& item.data.trigger === C.TRIGGER_CLICK
-					&& (!container || item.el.protip.get(0) !== container.get(0))
-					&& (!source || item.el.source.get(0) !== source.get(0))
-					&& item.hide();
+					if (item.isVisible() && item.data.trigger === C.TRIGGER_CLICK &&
+						(!container || item.el.protip.get(0) !== container.get(0)) &&
+						(!source || item.el.source.get(0) !== source.get(0))) {
+						item.hide();
+					}
 				});
 			}
 		},
@@ -625,6 +629,22 @@ require('./src/Plugin');
 	"use strict";
 
 	var ProtipConstants = {
+		SKINS: {
+			default: {
+				'pro':              {color: '#FFF', background: '#da2e2b'},
+				'blue':             {color: '#FFF', background: '#336699'},
+				'red':              {color: '#FFF', background: '#802731'},
+				'aqua':             {color: '#FFF', background: '#339996'},
+				'dark':             {color: '#FFF', background: '#333'},
+				'dark-transparent': {color: '#FFF', background: 'rgba(20,20,20,.8)'},
+				'black':            {color: '#FFF', background: '#000'},
+				'leaf':             {color: '#FFF', background: '#339959'},
+				'purple':           {color: '#FFF', background: '#613399'},
+				'pink':             {color: '#FFF', background: '#D457AA'},
+				'orange':           {color: '#FFF', background: '#E64426'},
+				'white':            {color: '#333', border: '#777', background: '#FFF'}
+			}
+		},
 		PLACEMENT_CENTER: 'center',
 		PLACEMENT_INSIDE: 'inside',
 		PLACEMENT_OUTSIDE: 'outside',
@@ -685,19 +705,21 @@ require('./src/Plugin');
 		DEFAULT_NAMESPACE: 'pt',
 		DEFAULT_DELAY_OUT: 100,
 
-		SELECTOR_PREFIX: 'protip-',
-		SELECTOR_BODY: 'body',
-		SELECTOR_ARROW: 'arrow',
-		SELECTOR_CONTAINER: 'container',
-		SELECTOR_SHOW: 'protip-show',
-		SELECTOR_CLOSE: '.protip-close',
-        SELECTOR_SKIN_PREFIX: 'protip-skin-',
-        SELECTOR_SIZE_PREFIX: '--size-',
-        SELECTOR_SCHEME_PREFIX: '--scheme-',
-        SELECTOR_ANIMATE: 'animated',
-		SELECTOR_TARGET: '.protip-target',
-		SELECTOR_MIXIN_PREFIX: 'protip-mixin--',
-		SELECTOR_OPEN: 'protip-open',
+		SELECTOR_PREFIX:        'protip-',
+		SELECTOR_BODY:          'body',
+		SELECTOR_ARROW:         'arrow',
+		SELECTOR_ARROW_BORDER:  'arrow-border',
+		SELECTOR_CONTAINER:     'container',
+		SELECTOR_SHOW:          'protip-show',
+		SELECTOR_CLOSE:         '.protip-close',
+		SELECTOR_SKIN_PREFIX:   'protip-skin-',
+		SELECTOR_SIZE_PREFIX:   '--size-',
+		SELECTOR_SCHEME_PREFIX: '--scheme-',
+		SELECTOR_ANIMATE:       'animated',
+		SELECTOR_TARGET:        '.protip-target',
+		SELECTOR_MIXIN_PREFIX:  'protip-mixin--',
+		SELECTOR_OPEN:          'protip-open',
+		SELECTOR_CONTENT:       '.protip-content',
 
 		TEMPLATE_PROTIP: '<div class="{classes}" data-pt-identifier="{identifier}" style="{widthType}:{width}px">{arrow}{icon}<div class="protip-content">{content}</div></div>',
 		TEMPLATE_ICON: '<i class="icon-{icon}"></i>',
@@ -714,7 +736,7 @@ require('./src/Plugin');
 		PSEUDO_THIS: 'this'
 	};
 
-	ProtipConstants.TEMPLATE_ARROW = '<span class="' + ProtipConstants.SELECTOR_PREFIX + ProtipConstants.SELECTOR_ARROW + '"></span>';
+	ProtipConstants.TEMPLATE_ARROW = '<span class="' + ProtipConstants.SELECTOR_PREFIX + ProtipConstants.SELECTOR_ARROW + '"><span class="' + ProtipConstants.SELECTOR_PREFIX + ProtipConstants.SELECTOR_ARROW_BORDER + '"></span></span>';
 
 	return ProtipConstants;
 }));
@@ -987,11 +1009,8 @@ require('./src/Plugin');
 				}
 			}
 
-			// Set first for prior
-			this._item.data.position = this._positionList[0].key;
-
 			// Return the result if we had one. Return values for the default position if not.
-			return this._result || new PositionCalculator(this._item);
+			return this._result || new PositionCalculator(this._item, this._positionList[0].key);
 		},
 
 		/**
@@ -1265,6 +1284,14 @@ require('./src/Plugin');
 			}
 		},
 
+		/***
+		 * Update the content of a protip instance (In case the title is a selector to an HTML element and the element was modified)
+		 */
+		update:  function () {
+			this.data.title = this.data.originalTitle;
+			this._detectTitle();
+			this.el.protip.find(C.SELECTOR_CONTENT).html(this.data.title);
+		},
 		/**
 		 * Destroys the current intance.
 		 * Reset data, hide, unbind, remove.
@@ -1275,8 +1302,7 @@ require('./src/Plugin');
 			this.el.protip.remove();
 			this.el.source
 				.data(this._namespaced(C.PROP_INITED), false)
-				.data(this._namespaced(C.PROP_IDENTIFIER), false)
-				.removeData();
+				.data(this._namespaced(C.PROP_IDENTIFIER), false);
 			this.classInstance.onItemDestroyed(this.data.identifier);
 			$.each(this._task, function(k, task){
 				clearTimeout(task);
@@ -1302,6 +1328,65 @@ require('./src/Plugin');
 			else {
 				this.show();
 			}
+		},
+
+		applyColors: function (style) {
+			var def_style = {};
+			if (this.data.skin in C.SKINS && this.data.scheme in C.SKINS[this.data.skin]) {
+				def_style = C.SKINS[this.data.skin][this.data.scheme];
+			}
+			if (this.data.background) {
+				def_style.background = this.data.background;
+			}
+			if (this.data.border) {
+				def_style.border = this.data.border;
+			}
+			//Reset borders
+			this.el.protipArrow.add(this.el.protipArrowBorder).css({
+				'border-top-color':    '',
+				'border-bottom-color': '',
+				'border-left-color':   '',
+				'border-right-color':  ''
+			});
+			switch (this.data.position) {
+				case C.POSITION_TOP:
+				case C.POSITION_TOP_LEFT:
+				case C.POSITION_TOP_RIGHT:
+				case C.POSITION_CORNER_RIGHT_TOP:
+					this.el.protipArrow.css({'border-top-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-top-color': def_style.border});
+					break;
+				case C.POSITION_RIGHT:
+				case C.POSITION_RIGHT_TOP:
+				case C.POSITION_RIGHT_BOTTOM:
+				case C.POSITION_CORNER_RIGHT_BOTTOM:
+					this.el.protipArrow.css({'border-right-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-right-color': def_style.border});
+					break;
+				case C.POSITION_BOTTOM:
+				case C.POSITION_BOTTOM_LEFT:
+				case C.POSITION_BOTTOM_RIGHT:
+				case C.POSITION_CORNER_LEFT_BOTTOM:
+					this.el.protipArrow.css({'border-bottom-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-bottom-color': def_style.border});
+					break;
+				case C.POSITION_LEFT:
+				case C.POSITION_LEFT_TOP:
+				case C.POSITION_LEFT_BOTTOM:
+				case C.POSITION_CORNER_LEFT_TOP:
+					this.el.protipArrow.css({'border-left-color': def_style.background});
+					this.el.protipArrowBorder.css({'border-left-color': def_style.border});
+					break;
+			}
+
+			style.background = def_style.background;
+			style.color = def_style.color;
+			style.border = '';
+
+			if (def_style.border) {
+				style.border = '1px solid' + def_style.border;
+			}
+			return style;
 		},
 
 		/**
@@ -1339,16 +1424,21 @@ require('./src/Plugin');
 				}.bind(this), this.data.autoHide);
 			}
 
+			//this.update();
+
 			var style;
 
 			// Handle gravity/non-gravity based position calculations
 			if (this.data.gravity) {
 				style = new GravityTester(this);
+				this.data.position = style.position;
 				delete style.position;
 			}
 			else {
 				style = new PositionCalculator(this);
 			}
+
+			this.applyColors(style);
 
 			// Fire show event and add open class
 			this.el.source.addClass(C.SELECTOR_OPEN);
@@ -1360,10 +1450,11 @@ require('./src/Plugin');
 				.addClass(C.SELECTOR_SHOW);
 
 			// If we need animation
-			this.data.animate &&
+			if (this.data.animate) {
 				this.el.protip
 					.addClass(C.SELECTOR_ANIMATE)
 					.addClass(this.data.animate || this.classInstance.settings.animate);
+			}
 
 			// Set visibility
 			this._isVisible = true;
@@ -1508,8 +1599,9 @@ require('./src/Plugin');
 			});
 
 			// Convert to jQuery object and append
-			this.el.protip = $(this.el.protip);
-			this.el.protipArrow = this.el.protip.find('.' + C.SELECTOR_PREFIX + C.SELECTOR_ARROW);
+			this.el.protip            = $(this.el.protip);
+			this.el.protipArrow       = this.el.protip.find('.' + C.SELECTOR_PREFIX + C.SELECTOR_ARROW);
+			this.el.protipArrowBorder = this.el.protip.find('.' + C.SELECTOR_PREFIX + C.SELECTOR_ARROW_BORDER);
 			this.el.target.append(this.el.protip);
 		},
 
@@ -1525,6 +1617,10 @@ require('./src/Plugin');
 			var size      = this.data.size;
 			var scheme    = this.data.scheme;
 
+			if (skin === 'square') {
+				classList.push(C.SELECTOR_SKIN_PREFIX + skin);
+				skin = 'default';
+			}
 			// Main container class
 			classList.push(C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER);
 			// Skin class
@@ -1690,8 +1786,10 @@ require('./src/Plugin');
 		 *
 		 * @private
 		 */
-		_onProtipMouseleave: function(){
-			(this.data.trigger === C.TRIGGER_HOVER) && this.hide();
+		_onProtipMouseleave: function () {
+			if (this.data.trigger === C.TRIGGER_HOVER) {
+				this.hide();
+			}
 		},
 
 		/**
@@ -1805,12 +1903,12 @@ require('./src/Plugin');
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					el = $(el);
-					$._protipClassInstance.getItemInstance(el).destroy();
+					$._protipClassInstance.destroyItemInstance(el);
 				});
 			}
 			return this;
 		},
-		
+
 		/**
 		 * Simply sets tooltip to the element but it won't show.
 		 *
@@ -1820,7 +1918,7 @@ require('./src/Plugin');
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					el = $(el);
-					$._protipClassInstance.getItemInstance(el).destroy();
+					$._protipClassInstance.destroyItemInstance(el);
 					$._protipClassInstance.getItemInstance(el, override);
 				});
 			}
@@ -1837,7 +1935,7 @@ require('./src/Plugin');
 			if ($._protipBuffer.isReady()) {
 				return this.each(function (index, el) {
 					el = $(el);
-					$._protipClassInstance.getItemInstance(el).destroy();
+					$._protipClassInstance.destroyItemInstance(el);
 					$._protipClassInstance.getItemInstance(el, override).show(true);
 				});
 			}
