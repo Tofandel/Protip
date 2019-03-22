@@ -205,6 +205,8 @@
 		 * @param key {string} Item instance identifier.
 		 */
 		destroyItemInstance: function (key) {
+			if (typeof key === 'object')
+				key = key.data(this.namespaced(C.PROP_IDENTIFIER));
 			if (key in this._itemInstances) {
 				this._itemInstances[key].destroy();
 			}

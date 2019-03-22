@@ -339,6 +339,8 @@ require('./src/Plugin');
 		 * @param key {string} Item instance identifier.
 		 */
 		destroyItemInstance: function (key) {
+			if (typeof key === 'object')
+				key = key.data(this.namespaced(C.PROP_IDENTIFIER));
 			if (key in this._itemInstances) {
 				this._itemInstances[key].destroy();
 			}
@@ -493,6 +495,7 @@ require('./src/Plugin');
 			var el                = $(ev.target);
 			var container         = el.closest('.' + C.SELECTOR_PREFIX + C.SELECTOR_CONTAINER) || false;
 			var source            = el.closest(C.DEFAULT_SELECTOR);
+			//var sourceInstance    = this._isInited(source) ? this.getItemInstance(source) : false;
 			var containerInstance = this._isInited(container) ? this.getItemInstance(container) : false;
 
 			if (!containerInstance || containerInstance && containerInstance.data.trigger !== C.TRIGGER_CLICK) {
@@ -590,7 +593,7 @@ require('./src/Plugin');
 		 *
 		 * @private
 		 */
-		_unbind: function(){
+		_unbind: function () {
 			$(C.SELECTOR_BODY)
 				.off(C.EVENT_CLICK, $.proxy(this._onBodyClick, this))
 				.off(C.EVENT_MOUSEOVER, this.settings.selector, $.proxy(this._onAction, this))
